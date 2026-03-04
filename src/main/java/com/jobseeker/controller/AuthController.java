@@ -3,7 +3,6 @@ package com.jobseeker.controller;
 import com.jobseeker.dto.LoginRequest;
 import com.jobseeker.dto.RegisterRequest;
 import com.jobseeker.service.UserService;
-import com.jobseeker.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
-    private final JwtService jwtService;
 
     @PostMapping("/register")
     public void register(@RequestBody RegisterRequest request) {
