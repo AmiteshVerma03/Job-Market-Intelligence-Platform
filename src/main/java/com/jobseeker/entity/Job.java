@@ -1,16 +1,19 @@
 package com.jobseeker.entity;
 
-import java.time.LocalDate;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Builder
+@Table(name="job")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Job {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
@@ -24,6 +27,4 @@ public class Job {
     private String skills;
 
     private Integer salary;
-
-    private LocalDate postedDate;
 }
