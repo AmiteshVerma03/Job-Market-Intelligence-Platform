@@ -1,12 +1,19 @@
 package com.jobseeker.service;
 
-import com.jobseeker.entity.Job;
-import com.jobseeker.repository.JobRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.jobseeker.entity.Job;
+import com.jobseeker.entity.Skill;
+import com.jobseeker.repository.JobRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -22,26 +29,27 @@ public class AnalyticsService {
 
         for (Job job : jobs) {
 
-            String skills = job.getSkills();
+            Set<Skill> skills = job.getSkills();
+
             if (skills == null)
                 continue;
 
-            String[] skillArray = skills.split(",");
+            for (Skill skill : skills) {
+                String skillName = skill.getName();
 
-            for (String skill : skillArray) {
-                skill = skill.trim();
-                skillCount.put(skill, skillCount.getOrDefault(skill, 0) + 1);
+                skillCount.put(skillName,
+                        skillCount.getOrDefault(skillName, 0) + 1);
             }
         }
 
         return skillCount.entrySet()
                 .stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(java.util.stream.Collectors.toMap(
+                .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (a, b) -> a,
-                        java.util.LinkedHashMap::new));
+                        LinkedHashMap::new));
     }
 
     public Map<String, Integer> topSkillsByLocation(String location) {
@@ -52,19 +60,17 @@ public class AnalyticsService {
 
         for (Job job : jobs) {
 
-            String skills = job.getSkills();
+            Set<Skill> skills = job.getSkills();
 
             if (skills == null)
                 continue;
 
-            String[] skillArray = skills.split(",");
+            for (Skill skill : skills) {
 
-            for (String skill : skillArray) {
+                String skillName = skill.getName();
 
-                skill = skill.trim();
-
-                skillCount.put(skill,
-                        skillCount.getOrDefault(skill, 0) + 1);
+                skillCount.put(skillName,
+                        skillCount.getOrDefault(skillName, 0) + 1);
             }
         }
 
@@ -114,15 +120,16 @@ public class AnalyticsService {
 
         for (Job job : jobs) {
 
-            String skills = job.getSkills();
-
+            Set<Skill> skills = job.getSkills();
             if (skills == null)
                 continue;
 
-            if (skills.toLowerCase().contains(skill.toLowerCase())) {
-                if (job.getSalary() != null) {
-                    totalSalary += job.getSalary();
-                    count++;
+            for (Skill s : skills) {
+                if (s.getName().equalsIgnoreCase(skill)) {
+                    if (job.getSalary() != null) {
+                        totalSalary += job.getSalary();
+                        count++;
+                    }
                 }
             }
         }
@@ -143,6 +150,21 @@ public class AnalyticsService {
             String company = (String) row[0];
             Long count = (Long) row[1];
             response.put(company, count);
+        }
+
+        return response;
+    }
+
+    public Map<String, Double> averageSalaryByLocation() {
+
+        List<Object[]> results = jobRepository.averageSalaryByLocation();
+
+        Map<String, Double> response = new LinkedHashMap<>();
+
+        for (Object[] row : results) {
+            String location = (String) row[0];
+            Double avgSalary = (Double) row[1];
+            response.put(location, avgSalary);
         }
 
         return response;

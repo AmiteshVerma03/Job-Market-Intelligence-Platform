@@ -1,11 +1,24 @@
 package com.jobseeker.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import java.util.Set;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
-@Table(name="job")
+@Table(name = "job")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,14 +30,16 @@ public class Job {
     private Long id;
 
     private String title;
-
     private String company;
-
     private String location;
-
     private String description;
-
-    private String skills;
-
     private Integer salary;
+
+    @ManyToMany
+    @JoinTable(
+            name = "job_skills",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    private Set<Skill> skills;
 }

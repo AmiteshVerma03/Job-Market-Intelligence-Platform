@@ -53,4 +53,9 @@ public class AnalyticsController {
     public Map<String, Long> topCompaniesDB() {
         return analyticsService.topCompaniesDB();
     }
+
+    @GetMapping("/average-salary-by-location")
+    public Map<String, Double> averageSalaryByLocation() {
+        return analyticsService.averageSalaryByLocation();
+    }
 }
