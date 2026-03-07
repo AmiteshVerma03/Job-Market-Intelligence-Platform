@@ -5,8 +5,12 @@ import com.jobseeker.repository.UserRepository;
 import com.jobseeker.security.JwtService;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -19,25 +23,46 @@ public class UserService {
     private final JwtService jwtService;
 
     public User registerUser(String name, String email, String password) {
+        String normalizedEmail = email == null ? null : email.trim().toLowerCase();
 
-        if (userRepository.findByEmail(email).isPresent()) {
-            throw new RuntimeException("Email already registered");
+        if (normalizedEmail == null || normalizedEmail.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email is required");
+        }
+
+        if (userRepository.findByEmailIgnoreCase(normalizedEmail).isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Email already registered");
         }
 
         User user = User.builder()
                 .name(name)
-                .email(email)
+                .email(normalizedEmail)
                 .password(passwordEncoder.encode(password))
                 .role("USER")
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Email already registered");
+        }
     }
 
     public String login(String email, String password) {
+        String normalizedEmail = email == null ? null : email.trim().toLowerCase();
+        if (normalizedEmail == null || normalizedEmail.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email is required");
+        }
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailIgnoreCase(normalizedEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {

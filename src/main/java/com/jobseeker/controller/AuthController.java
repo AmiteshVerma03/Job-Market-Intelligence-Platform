@@ -4,6 +4,9 @@ import com.jobseeker.dto.LoginRequest;
 import com.jobseeker.dto.RegisterRequest;
 import com.jobseeker.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,11 +17,14 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public void register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+
         userService.registerUser(
                 request.getName(),
                 request.getEmail(),
                 request.getPassword());
+
+        return ResponseEntity.ok("User Registered");
     }
 
     @PostMapping("/login")

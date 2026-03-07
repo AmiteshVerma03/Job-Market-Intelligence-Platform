@@ -15,12 +15,12 @@ public class JobController {
     private final JobService jobService;
 
     @PostMapping
-    public Job createJob(@RequestBody Job job){
+    public Job createJob(@RequestBody Job job) {
         return jobService.saveJob(job);
     }
 
     @GetMapping
-    public List<Job> getJobs(){
+    public List<Job> getJobs() {
         return jobService.getAllJobs();
     }
 }
