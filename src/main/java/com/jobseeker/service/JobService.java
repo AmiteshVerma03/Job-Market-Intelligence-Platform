@@ -1,6 +1,7 @@
 package com.jobseeker.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -71,5 +72,17 @@ public class JobService {
     public Page<Job> getAllJobs(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return jobRepository.findAll(pageable);
+    }
+
+    public List<Job> findByLocation(String location) {
+        return jobRepository.findByLocationIgnoreCase(location);
+    }
+
+    public List<Job> findByCompany(String company) {
+        return jobRepository.findByCompanyIgnoreCase(company);
+    }
+
+    public List<Job> findBySkill(String skill) {
+        return jobRepository.findJobsBySkill(skill);
     }
 }

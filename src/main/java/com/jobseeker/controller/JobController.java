@@ -1,5 +1,7 @@
 package com.jobseeker.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,5 +33,20 @@ public class JobController {
             @RequestParam(defaultValue = "10") int size) {
 
         return jobService.getAllJobs(page, size);
+    }
+
+    @GetMapping("/search/location")
+    public List<Job> getJobsByLocation(@RequestParam String location) {
+        return jobService.findByLocation(location);
+    }
+
+    @GetMapping("/search/company")
+    public List<Job> getJobsByCompany(@RequestParam String company) {
+        return jobService.findByCompany(company);
+    }
+
+    @GetMapping("/search/skill")
+    public List<Job> getJobsBySkill(@RequestParam String skill) {
+        return jobService.findBySkill(skill);
     }
 }

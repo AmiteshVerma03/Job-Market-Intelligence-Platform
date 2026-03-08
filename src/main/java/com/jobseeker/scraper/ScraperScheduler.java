@@ -10,7 +10,7 @@ public class ScraperScheduler {
 
     private final IndeedScraperService scraperService;
 
-    @Scheduled(fixedRate = 3600000)
+    @Scheduled(cron = "0 0 */6 * * *")
     public void runScraper() throws Exception {
         scraperService.scrapeJobs();
     }

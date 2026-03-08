@@ -1,6 +1,7 @@
 package com.jobseeker.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +33,16 @@ public interface JobRepository extends JpaRepository<Job, Long> {
        List<Object[]> averageSalaryByLocation();
 
        Page<Job> findAll(Pageable pageable);
+
+       Optional<Job> findByUrl(String url);
+
+       List<Job> findByCompanyIgnoreCase(String company);
+
+       @Query("""
+                     SELECT j
+                     FROM Job j
+                     JOIN j.skills s
+                     WHERE LOWER(s.name) = LOWER(:skill)
+                     """)
+       List<Job> findJobsBySkill(String skill);
 }

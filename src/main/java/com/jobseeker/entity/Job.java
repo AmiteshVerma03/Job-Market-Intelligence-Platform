@@ -35,6 +35,7 @@ public class Job {
     private String location;
     private String description;
     private Integer salary;
+    private String url;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "job_skills", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
