@@ -1,10 +1,12 @@
 package com.jobseeker.service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.jobseeker.entity.Job;
@@ -54,8 +56,9 @@ public class JobService {
                 continue;
 
             Skill skill = skillRepository
-                    .findByNameIgnoreCase(skillName)
-                    .orElseGet(() -> skillRepository.save(new Skill(null, skillName)));
+                    .findByNameIgnoreCase(trimmedSkillName)
+                    .orElseGet(() -> skillRepository.save(
+                            new Skill(null, trimmedSkillName)));
 
             skillSet.add(skill);
         }
@@ -65,7 +68,8 @@ public class JobService {
         return jobRepository.save(job);
     }
 
-    public List<Job> getAllJobs() {
-        return jobRepository.findAll();
+    public Page<Job> getAllJobs(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return jobRepository.findAll(pageable);
     }
 }
