@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>JobIntel — Job Market Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body class="auth-page">
+
+<!-- Animated background -->
+<div class="bg-grid"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+
+<div class="auth-container">
+
+  <!-- Left panel -->
+  <div class="auth-left">
+    <div class="brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-name">JobIntel</span>
+    </div>
+    <div class="auth-hero">
+      <h1>Decode the<br/><em>Job Market</em></h1>
+      <p>Real-time intelligence on skills, salaries, and companies — scraped, analyzed, and served fresh.</p>
+    </div>
+    <div class="stat-pills">
+      <div class="stat-pill"><span class="pill-num">9+</span><span class="pill-label">Job Categories</span></div>
+      <div class="stat-pill"><span class="pill-num">∞</span><span class="pill-label">Skills Tracked</span></div>
+      <div class="stat-pill"><span class="pill-num">6h</span><span class="pill-label">Refresh Cycle</span></div>
+    </div>
+  </div>
+
+  <!-- Right panel — auth forms -->
+  <div class="auth-right">
+    <div class="tab-switcher">
+      <button class="tab-btn active" id="loginTab" onclick="showTab('login')">Sign In</button>
+      <button class="tab-btn" id="registerTab" onclick="showTab('register')">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required/>
+      </div>
+      <div class="form-msg" id="loginMsg"></div>
+      <button type="submit" class="btn-primary" id="loginBtn">
+        <span>Sign In</span>
+        <span class="btn-arrow">→</span>
+      </button>
+    </form>
+
+    <!-- Register Form -->
+    <form class="auth-form hidden" id="registerForm" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="regName" placeholder="Amitesh Verma" required/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com" required/>
+      </div>
+      <div class="form-group">
+        <label>Password <span class="hint">min 8 characters</span></label>
+        <input type="password" id="regPassword" placeholder="••••••••" minlength="8" required/>
+      </div>
+      <div class="form-msg" id="registerMsg"></div>
+      <button type="submit" class="btn-primary" id="registerBtn">
+        <span>Create Account</span>
+        <span class="btn-arrow">→</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="api.js" defer></script>
+<script src="auth.js" defer></script>
+</body>
+</html>

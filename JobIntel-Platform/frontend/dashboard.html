@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — JobIntel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body class="app-page">
+
+<div class="bg-grid"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-icon">⬡</span>
+    <span class="brand-name">JobIntel</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-page="dashboard">
+      <span class="nav-icon">◈</span> Dashboard
+    </a>
+    <a class="nav-item" data-page="jobs">
+      <span class="nav-icon">◉</span> Browse Jobs
+    </a>
+    <a class="nav-item" data-page="skills">
+      <span class="nav-icon">◎</span> Top Skills
+    </a>
+    <a class="nav-item" data-page="companies">
+      <span class="nav-icon">◫</span> Companies
+    </a>
+    <a class="nav-item" data-page="salary">
+      <span class="nav-icon">◷</span> Salary Intel
+    </a>
+    <a class="nav-item admin-only hidden" data-page="admin">
+      <span class="nav-icon">⬟</span> Admin
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-chip" id="userChip">
+      <span class="user-avatar" id="userAvatar">A</span>
+      <span class="user-email" id="userEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="afdadccaddefcad7cec2dfc3ca81ccc0c2">[email&#160;protected]</a></span>
+    </div>
+    <button class="btn-logout" onclick="logout()">Sign Out</button>
+  </div>
+</aside>
+
+<!-- Mobile topbar -->
+<header class="topbar">
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <span class="brand-name">JobIntel</span>
+  <button class="btn-logout-sm" onclick="logout()">↩</button>
+</header>
+
+<!-- Main content -->
+<main class="main-content" id="mainContent">
+
+  <!-- ═══ DASHBOARD PAGE ═══ -->
+  <section class="page active" id="page-dashboard">
+    <div class="page-header">
+      <h2>Overview</h2>
+      <p>Real-time job market intelligence</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card" id="kpi-jobs">
+        <div class="kpi-label">Total Jobs</div>
+        <div class="kpi-value" id="kpiJobCount">—</div>
+        <div class="kpi-sub">in database</div>
+      </div>
+      <div class="kpi-card" id="kpi-skills">
+        <div class="kpi-label">Top Skill</div>
+        <div class="kpi-value" id="kpiTopSkill">—</div>
+        <div class="kpi-sub">most demanded</div>
+      </div>
+      <div class="kpi-card" id="kpi-company">
+        <div class="kpi-label">Top Company</div>
+        <div class="kpi-value" id="kpiTopCompany">—</div>
+        <div class="kpi-sub">most postings</div>
+      </div>
+      <div class="kpi-card" id="kpi-salary">
+        <div class="kpi-label">Avg Salary</div>
+        <div class="kpi-value" id="kpiAvgSalary">—</div>
+        <div class="kpi-sub">across locations</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="card">
+        <div class="card-header">
+          <h3>Top Skills</h3>
+          <span class="badge">Live</span>
+        </div>
+        <div class="bar-chart" id="dashSkillsChart"></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Top Companies</h3>
+          <span class="badge">Live</span>
+        </div>
+        <div class="bar-chart" id="dashCompaniesChart"></div>
+      </div>
+    </div>
+
+    <div class="card full-width">
+      <div class="card-header">
+        <h3>Salary by Location</h3>
+      </div>
+      <div class="salary-map" id="dashSalaryChart"></div>
+    </div>
+  </section>
+
+  <!-- ═══ JOBS PAGE ═══ -->
+  <section class="page hidden" id="page-jobs">
+    <div class="page-header">
+      <h2>Browse Jobs</h2>
+      <p>Search and filter the job database</p>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-tabs">
+        <button class="stab active" data-type="location">By Location</button>
+        <button class="stab" data-type="company">By Company</button>
+        <button class="stab" data-type="skill">By Skill</button>
+        <button class="stab" data-type="all">All Jobs</button>
+      </div>
+      <div class="search-input-row">
+        <input type="text" id="jobSearchInput" placeholder="e.g. New York, Google, Python…" class="search-input"/>
+        <button class="btn-primary" id="searchBtn">Search</button>
+      </div>
+    </div>
+
+    <div class="pagination-bar" id="paginationBar" style="display:none">
+      <button class="btn-ghost prev-btn">← Prev</button>
+      <span id="pageInfo">Page 1</span>
+      <button class="btn-ghost next-btn">Next →</button>
+    </div>
+
+    <div class="jobs-grid" id="jobsGrid">
+      <div class="empty-state">Use the search above to find jobs</div>
+    </div>
+
+    <div class="pagination-bar" id="paginationBarBottom" style="display:none">
+      <button class="btn-ghost prev-btn">← Prev</button>
+      <span id="pageInfoBottom">Page 1</span>
+      <button class="btn-ghost next-btn">Next →</button>
+    </div>
+  </section>
+
+  <!-- ═══ SKILLS PAGE ═══ -->
+  <section class="page hidden" id="page-skills">
+    <div class="page-header">
+      <h2>Top Skills</h2>
+      <p>Most demanded skills across all job listings</p>
+    </div>
+
+    <div class="filters-row">
+      <div class="form-group inline">
+        <label>Filter by Location</label>
+        <input type="text" id="skillLocation" placeholder="e.g. New York (optional)"/>
+        <button class="btn-primary" id="applySkillsBtn">Apply</button>
+      </div>
+      <div class="form-group inline">
+        <label>Show Top</label>
+        <select id="skillLimit">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="skills-container" id="skillsContainer">
+      <div class="loading-pulse">Loading skills…</div>
+    </div>
+  </section>
+
+  <!-- ═══ COMPANIES PAGE ═══ -->
+  <section class="page hidden" id="page-companies">
+    <div class="page-header">
+      <h2>Companies</h2>
+      <p>Companies ranked by number of active job postings</p>
+    </div>
+    <div class="companies-container" id="companiesContainer">
+      <div class="loading-pulse">Loading companies…</div>
+    </div>
+  </section>
+
+  <!-- ═══ SALARY PAGE ═══ -->
+  <section class="page hidden" id="page-salary">
+    <div class="page-header">
+      <h2>Salary Intelligence</h2>
+      <p>Explore salary data by skill and location</p>
+    </div>
+
+    <div class="salary-panels">
+      <div class="card">
+        <div class="card-header"><h3>Salary by Skill</h3></div>
+        <div class="skill-salary-search">
+          <input type="text" id="salarySkillInput" placeholder="e.g. Python, Java, React…"/>
+          <button class="btn-primary" id="salaryLookupBtn">Look Up</button>
+        </div>
+        <div id="salarySkillResult" class="salary-result"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>Average Salary by Location</h3></div>
+        <div class="bar-chart large" id="salaryLocationChart">
+          <div class="loading-pulse">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ADMIN PAGE ═══ -->
+  <section class="page hidden" id="page-admin">
+    <div class="page-header">
+      <h2>Admin Panel</h2>
+      <p>System controls (Admin only)</p>
+    </div>
+    <div class="card admin-card">
+      <h3>Scraper Control</h3>
+      <p>Manually trigger the Indeed job scraper. This runs across 9 job categories × 10 pages. Takes several minutes.</p>
+      <button class="btn-danger" id="scraperBtn">
+        ▶ Run Scraper Now
+      </button>
+      <div id="scraperMsg" class="form-msg" style="margin-top:1rem"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="api.js" defer></script>
+<script src="dashboard.js" defer></script>
+</body>
+</html>
+
+
