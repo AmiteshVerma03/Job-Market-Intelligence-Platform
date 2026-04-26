@@ -84,16 +84,16 @@ const Jobs = {
     return apiRequest(`/jobs?page=${page}&size=${size}`);
   },
 
-  async searchByLocation(location) {
-    return apiRequest(`/jobs/search/location?location=${encodeURIComponent(location)}`);
+  async searchByLocation(location, page = 0, size = 12) {
+    return apiRequest(`/jobs/search/location?location=${encodeURIComponent(location)}&page=${page}&size=${size}`);
   },
 
-  async searchByCompany(company) {
-    return apiRequest(`/jobs/search/company?company=${encodeURIComponent(company)}`);
+  async searchByCompany(company, page = 0, size = 12) {
+    return apiRequest(`/jobs/search/company?company=${encodeURIComponent(company)}&page=${page}&size=${size}`);
   },
 
-  async searchBySkill(skill) {
-    return apiRequest(`/jobs/search/skill?skill=${encodeURIComponent(skill)}`);
+  async searchBySkill(skill, page = 0, size = 12) {
+    return apiRequest(`/jobs/search/skill?skill=${encodeURIComponent(skill)}&page=${page}&size=${size}`);
   }
 };
 

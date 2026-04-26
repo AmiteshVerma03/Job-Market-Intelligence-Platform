@@ -1,6 +1,5 @@
 package com.jobseeker.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -28,21 +27,14 @@ public class JobController {
         return jobService.saveJob(job);
     }
 
+    // ── Task 1: all search endpoints return the same paged shape ───────────
+    // Frontend can use totalPages / totalElements / page consistently
+
     @GetMapping
     public Map<String, Object> getJobs(
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "0")  int page,
             @RequestParam(defaultValue = "10") int size) {
-
-        Page<Job> jobsPage = jobService.getAllJobs(page, size);
-        return Map.of(
-                "content", jobsPage.getContent(),
-                "page", jobsPage.getNumber(),
-                "size", jobsPage.getSize(),
-                "totalElements", jobsPage.getTotalElements(),
-                "totalPages", jobsPage.getTotalPages(),
-                "first", jobsPage.isFirst(),
-                "last", jobsPage.isLast(),
-                "numberOfElements", jobsPage.getNumberOfElements());
+        return toPageResponse(jobService.getAllJobs(page, size));
     }
 
     @GetMapping("/count")
@@ -50,18 +42,45 @@ public class JobController {
         return Map.of("count", jobService.countAllJobs());
     }
 
+    // Task 1 — was List<Job>, now Page<Job>
     @GetMapping("/search/location")
-    public List<Job> getJobsByLocation(@RequestParam String location) {
-        return jobService.findByLocation(location);
+    public Map<String, Object> getJobsByLocation(
+            @RequestParam String location,
+            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return toPageResponse(jobService.findByLocation(location, page, size));
     }
 
+    // Task 1 — was List<Job>, now Page<Job>
     @GetMapping("/search/company")
-    public List<Job> getJobsByCompany(@RequestParam String company) {
-        return jobService.findByCompany(company);
+    public Map<String, Object> getJobsByCompany(
+            @RequestParam String company,
+            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return toPageResponse(jobService.findByCompany(company, page, size));
     }
 
+    // Task 1 — was List<Job>, now Page<Job>
     @GetMapping("/search/skill")
-    public List<Job> getJobsBySkill(@RequestParam String skill) {
-        return jobService.findBySkill(skill);
+    public Map<String, Object> getJobsBySkill(
+            @RequestParam String skill,
+            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return toPageResponse(jobService.findBySkill(skill, page, size));
+    }
+
+    // ── Helper: uniform page response shape ────────────────────────────────
+    private Map<String, Object> toPageResponse(Page<Job> p) {
+        return Map.of(
+            "content",          p.getContent(),
+            "page",             p.getNumber(),
+            "size",             p.getSize(),
+            "totalElements",    p.getTotalElements(),
+            "totalPages",       p.getTotalPages(),
+            "first",            p.isFirst(),
+            "last",             p.isLast(),
+            "numberOfElements", p.getNumberOfElements()
+        );
     }
 }
+

@@ -293,30 +293,32 @@ async function searchJobs() {
   jobsPage = 0;
   if (searchType !== 'all' && !query) { renderJobsError('Please enter a search term'); return; }
   lastSearch = query;
-  renderJobsLoading();
-  try {
-    if      (searchType === 'all')      await loadAllJobs();
-    else if (searchType === 'location') renderJobsList(await Jobs.searchByLocation(query));
-    else if (searchType === 'company')  renderJobsList(await Jobs.searchByCompany(query));
-    else if (searchType === 'skill')    renderJobsList(await Jobs.searchBySkill(query));
-  } catch (err) { renderJobsError(err.message); }
+  await executeSearch();
 }
 
-async function loadAllJobs() {
+async function executeSearch() {
   renderJobsLoading();
   try {
-    const data = await Jobs.getAll(jobsPage, jobsSize);
+    let data;
+    if      (searchType === 'all')      data = await Jobs.getAll(jobsPage, jobsSize);
+    else if (searchType === 'location') data = await Jobs.searchByLocation(lastSearch, jobsPage, jobsSize);
+    else if (searchType === 'company')  data = await Jobs.searchByCompany(lastSearch,  jobsPage, jobsSize);
+    else if (searchType === 'skill')    data = await Jobs.searchBySkill(lastSearch,    jobsPage, jobsSize);
     jobsTotalPages = data.totalPages ?? 1;
     renderJobsList(data.content ?? []);
     updatePagination();
   } catch (err) { renderJobsError(err.message); }
 }
 
+async function loadAllJobs() {
+  await executeSearch();
+}
+
 async function changePage(delta) {
   const next = jobsPage + delta;
   if (next < 0 || next >= jobsTotalPages) return;
   jobsPage = next;
-  await loadAllJobs();
+  await executeSearch();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
